@@ -1,12 +1,26 @@
 version: '3.4'
 
 services:
-  public-api:
+
+  frontend-api-lb:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend-api
+    ports:
+      - "5000:5000"
+    networks: 
+      - backend
+      
+  frontend-api:
     image: demo365.api
     environment:
-      REPOSITORY_URL: 'http://repository-api'
-    ports:
-      - "5200:80"
+      REPOSITORY_URL: 'http://internal-api-lb:5100'
+    #ports:
+    #  - "5200:80"
+    expose:
+      - "80"
     depends_on:
       - repository-api
     networks: 
@@ -15,20 +29,33 @@ services:
   fakesource-loader:
     image: demo365.fakesource
     environment:
-      REPOSITORY_URL: 'http://repository-api'
+      REPOSITORY_URL: 'http://internal-api-lb:5100'
     depends_on:
       - repository-api
     networks: 
-      - backend      
+      - backend
 
+  internal-api-lb:
+    image: nginx:latest
+    volumes:
+      - ./nginx-internal.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - repository-api
+    expose:
+      - "5100"
+    #ports:
+    #  - "5100:5100"
+    networks: 
+      - backend
+      
   repository-api:
     image: demo365.repository
     environment:
       DB_CONNECTION: 'Data Source=repository-db;Database=demo365;User Id=root;Password=Demo365!;SSL Mode=None'
     expose:
       - "80"
-    ports:
-      - "5100:80"
+    #ports:
+    #  - "5100:80"
     depends_on:
       - repository-db
     networks: 

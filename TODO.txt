@@ -13,24 +13,18 @@ Project Split:
 
 Containers:
 (-/LOW)3. Extra Containers #1 (Message Broker - Kafka, Distributed Cache DB - Redis)
-(-/LOW)4. Extra Containers #2 (Gateway)
-
-Orchestration:
-1. Docker Swarm or K8S or NONE/Compose (NONE?)
-
-Service Discovery:
-1. DNS vs Eureka 
-
-==========
-
-Client Gateway
-1. Spring GW or nginx (?)
-
-Cloud Deployment:
-1. Google
 
 Messaging: 
 1. Kafka
+
+Logs:
+1. ELK (FE API, Repository, FakeSource)
+
+==========
+
+
+Cloud Deployment:
+1. Google
 
 Real Provider:
 1. Try to find JSON API
