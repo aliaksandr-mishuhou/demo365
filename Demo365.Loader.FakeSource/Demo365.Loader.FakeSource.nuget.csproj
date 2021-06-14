@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-Demo365.Loader.TestGenerator-2F93028E-2A98-4D00-B03A-4D16EB1D7400</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Demo365.Contracts" Version="1.0.0" />
+    <PackageReference Include="Demo365.Repository.Writer.Client" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
+  </ItemGroup>
+</Project>

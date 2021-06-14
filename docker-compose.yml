@@ -1,0 +1,59 @@
+version: '3.4'
+
+services:
+  public-api:
+    image: demo365.api
+    environment:
+      REPOSITORY_URL: 'http://repository-api'
+    ports:
+      - "5200:80"
+    depends_on:
+      - repository-api
+    networks: 
+      - backend
+
+  fakesource-loader:
+    image: demo365.fakesource
+    environment:
+      REPOSITORY_URL: 'http://repository-api'
+    depends_on:
+      - repository-api
+    networks: 
+      - backend      
+
+  repository-api:
+    image: demo365.repository
+    environment:
+      DB_CONNECTION: 'Data Source=repository-db;Database=demo365;User Id=root;Password=Demo365!;SSL Mode=None'
+    expose:
+      - "80"
+    ports:
+      - "5100:80"
+    depends_on:
+      - repository-db
+    networks: 
+      - backend
+
+  repository-db:
+    image: demo365.repository.db
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'demo365'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'Demo365!'
+      MYSQL_ROOT_PASSWORD: 'Demo365!'
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - data:/var/lib/mysql
+    networks: 
+      - backend
+
+volumes:
+  data: 
+  
+networks:
+  backend:
+    driver: "bridge"      

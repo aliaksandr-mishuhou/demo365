@@ -1,0 +1,40 @@
+Persistent DB:
+(+/-)3. Search Indexes (Sport, Competition, Team(s), Time)
+(-)4. Scalability (sharding per sport/competition?)
+(-)5. Table Type (NDBCluster / Galera ?)
+(-)6. SP
+
+Fake Provider:
++ (No Need)1. Different Score/Game List depending on time
+
+Project Split:
++(PoC)1. Shared Nugets
++(PoC)2. Separate Solutions
+
+Containers:
+(-/LOW)3. Extra Containers #1 (Message Broker - Kafka, Distributed Cache DB - Redis)
+(-/LOW)4. Extra Containers #2 (Gateway)
+
+Orchestration:
+1. Docker Swarm or K8S or NONE/Compose (NONE?)
+
+Service Discovery:
+1. DNS vs Eureka 
+
+==========
+
+Client Gateway
+1. Spring GW or nginx (?)
+
+Cloud Deployment:
+1. Google
+
+Messaging: 
+1. Kafka
+
+Real Provider:
+1. Try to find JSON API
+
+Distributed Cache DB:
+1. Redis
+

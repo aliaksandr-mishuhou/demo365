@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "Demo365.Loader.TestGenerator": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "REPOSITORY_URL": "http://localhost:5100"
+      }
+    }
+  }
+}

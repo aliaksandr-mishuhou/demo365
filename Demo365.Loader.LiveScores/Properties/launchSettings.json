@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "Demo365.Loader.LiveScores": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
