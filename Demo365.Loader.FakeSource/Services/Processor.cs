@@ -15,17 +15,18 @@ namespace Demo365.Loader.FakeSource.Services
         private readonly IGamesAsyncWriterClient _gamesAsyncWriterClient;
         private readonly bool _asyncMode;
 
-        public Processor(ILogger<Processor> logger,
+        public Processor(
             IParser parser, 
             IGamesSyncWriterClient gamesSyncWriterClient, 
-            IGamesAsyncWriterClient gamesAsyncWriterClient = null,
-            bool asyncMode = false)
+            IGamesAsyncWriterClient gamesAsyncWriterClient,
+            ProcessorArgs args,
+            ILogger<Processor> logger)
         {
             _logger = logger;
             _parser = parser;
             _gamesSyncWriterClient = gamesSyncWriterClient;
             _gamesAsyncWriterClient = gamesAsyncWriterClient;
-            _asyncMode = asyncMode;
+            _asyncMode = args.Async;
         }
 
         public async Task RunAsync()

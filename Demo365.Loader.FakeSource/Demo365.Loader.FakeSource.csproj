@@ -12,5 +12,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Demo365.Contracts\Demo365.Contracts.csproj" />
     <ProjectReference Include="..\Demo365.Repository.Writer.Client\Demo365.Repository.Writer.Client.csproj" />
+    <ProjectReference Include="..\Demo365.ServiceBus.Kafka\Demo365.ServiceBus.Kafka.csproj" />
   </ItemGroup>
 </Project>

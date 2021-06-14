@@ -1,7 +1,7 @@
 REM cleanup
-docker rmi -f demo365.api
-docker rmi -f demo365.fakesource
-docker rmi -f demo365.repository 
+REM docker rmi -f demo365.api
+REM docker rmi -f demo365.fakesource
+REM docker rmi -f demo365.repository 
 REM // docker rmi -f demo365.repository.db 
 
 REM build new ones

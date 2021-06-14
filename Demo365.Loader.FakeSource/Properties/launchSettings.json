@@ -4,7 +4,10 @@
       "commandName": "Project",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "REPOSITORY_URL": "http://localhost:5100"
+        "REPOSITORY_URL": "http://localhost:5100",
+        "KAFKA_CONNECTION": "localhost:9092",
+        "KAFKA_TOPIC": "demo365_repository_insert",
+        "ASYNC": "true"
       }
     }
   }
