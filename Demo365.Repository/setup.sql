@@ -1,7 +1,5 @@
 CREATE DATABASE `demo365`;
-
 USE `demo365`;
-
 CREATE TABLE `games` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
   `sport` varchar(30) DEFAULT NULL,

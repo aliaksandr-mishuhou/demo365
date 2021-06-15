@@ -28,7 +28,7 @@ namespace Demo365.Loader.FakeSource.Services
                 new string[] { "B1", "B2", "B3", "B4" });
             yield return await competition4;
 
-            var competition5 = GenerateCompetition("swimming", "helloworld",
+            var competition5 = GenerateCompetition("boxing", "helloworld",
                 new string[] 
                 {
                     GenerateName(0, 5),
@@ -55,13 +55,13 @@ namespace Demo365.Loader.FakeSource.Services
                 var gameTeam1 = new GameTeam 
                 {
                     Name = teams[i],
-                    Score = DateTime.UtcNow.Hour - _random.Next(0, DateTime.UtcNow.Hour)
+                    //Score = DateTime.UtcNow.Hour - _random.Next(0, DateTime.UtcNow.Hour)
                 };
 
                 var gameTeam2 = new GameTeam
                 {
                     Name = teams[teams.Length - 1 - i],
-                    Score = DateTime.UtcNow.Hour + _random.Next(0, 24 - DateTime.UtcNow.Hour)
+                    //Score = DateTime.UtcNow.Hour + _random.Next(0, 24 - DateTime.UtcNow.Hour)
                 };
 
                 var game = new Game 

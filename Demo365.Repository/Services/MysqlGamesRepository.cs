@@ -22,31 +22,40 @@ namespace Demo365.Repository.Services
     {
         private readonly IDbRouter _router;
         private readonly ILogger<MysqlGamesRepository> _logger;
-
-        private const int UnqueIntervalMinutes = 120;
+        private readonly Config _config;
 
         // TODO: better to replace with SP
         private const string CheckSqlTemplate = @"
-SELECT COUNT(*) AS duplicates FROM games 
-WHERE sport = @Sport 
-    AND competition = @Competition 
-    AND (team1 = @Team1 AND team2 = @Team2 OR team1 = @Team2 AND team2 = @Team1) 
-    AND time >= DATE_ADD(@Time, INTERVAL -{0} MINUTE) AND time < DATE_ADD(@Time, INTERVAL {0} MINUTE)";
+            SELECT COUNT(*) AS duplicates FROM games 
+            WHERE sport = @Sport 
+                AND competition = @Competition 
+                AND (team1 = @Team1 AND team2 = @Team2 OR team1 = @Team2 AND team2 = @Team1) 
+                AND time >= DATE_ADD(@Time, INTERVAL -{0} MINUTE) AND time < DATE_ADD(@Time, INTERVAL {0} MINUTE)";
 
 
         // TODO: better to replace with SP
-        private const string InsertSql = @"
-INSERT INTO games(sport, competition, team1, team2, time)
-VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
+        private const string InsertSqlTeample = @"
+            INSERT INTO games(sport, competition, team1, team2, time)
+            VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
 
         // TODO: better to replace with SP
         // TODO: add pagination, replace hardcoded limit = 100
-        private const string SearchSql = "SELECT * FROM games /**where**/ ORDER BY time LIMIT 0, 100";
+        private const string SearchSqlTemplate = @"
+            SELECT * FROM games 
+            /**where**/ 
+            ORDER BY time DESC 
+            LIMIT 0, 100";
 
-        public MysqlGamesRepository(IDbRouter router, ILogger<MysqlGamesRepository> logger)
+        public MysqlGamesRepository(IDbRouter router, ILogger<MysqlGamesRepository> logger, Config config = null)
         {
             _router = router;
             _logger = logger;
+
+            _config = config;
+            if (_config == null) 
+            {
+                _config = new Config();
+            }
         }
 
         public async Task<int> AddAsync(IEnumerable<Game> games)
@@ -73,7 +82,7 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
                     await conn.OpenAsync();
 
                     // skip duplicates
-                    var halfInterval = Convert.ToInt32( UnqueIntervalMinutes * 1f / 2);
+                    var halfInterval = Convert.ToInt32( _config.UniqueIntervalMinutes * 1f / 2);
                     var checkSql = string.Format(CheckSqlTemplate, halfInterval);
 
                     var filtered = new List<GameIndex>();
@@ -93,7 +102,7 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
                     }
 
                     // insert batch
-                    result = await conn.ExecuteAsync(InsertSql, filtered);
+                    result = await conn.ExecuteAsync(InsertSqlTeample, filtered);
                 }
             }
             catch (Exception ex)
@@ -136,7 +145,7 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
         {
             var builder = new SqlBuilder();
 
-            var selector = builder.AddTemplate(SearchSql);
+            var selector = builder.AddTemplate(SearchSqlTemplate);
 
             // basic filtering (full match)
 
@@ -200,6 +209,13 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
                 },
                 Time = gameIndex.Time
             };
+        }
+
+        public class Config 
+        {
+            private const int DefaultUniqueGameIntervalMinutes = 120;
+
+            public int UniqueIntervalMinutes { get; set; } = DefaultUniqueGameIntervalMinutes;
         }
     }
 }

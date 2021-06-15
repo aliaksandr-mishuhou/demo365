@@ -32,15 +32,16 @@ namespace Demo365.Loader.FakeSource
                         ));
 
                     // async flow
-                    services.AddSingleton(options => new KafkaProducerConfig 
-                    { 
-                        ConnectionString = ctx.Configuration.GetValue<string>("KAFKA_CONNECTION"), 
-                        TopicResolver = new DefaultTopicResolver(ctx.Configuration.GetValue<string>("KAFKA_TOPIC")) 
-                    });
-                    services.AddSingleton<IPublisher, ConfluentKafkaPublisher>();
-                    services.AddSingleton<IGamesAsyncWriterClient, QueueGamesWriterClient>();
+                    //services.AddSingleton(options => new KafkaProducerConfig 
+                    //{ 
+                    //    ConnectionString = ctx.Configuration.GetValue<string>("KAFKA_CONNECTION"), 
+                    //    TopicResolver = new DefaultTopicResolver(ctx.Configuration.GetValue<string>("KAFKA_TOPIC")) 
+                    //});
+                    //services.AddSingleton<IPublisher, ConfluentKafkaPublisher>();
+                    //services.AddSingleton<IGamesAsyncWriterClient, QueueGamesWriterClient>();
+                    services.AddSingleton<IGamesAsyncWriterClient, NullAsyncWriter>();
 
-                    services.AddSingleton(options => new ProcessorArgs 
+                    services.AddSingleton(options => new Processor.Config 
                     { 
                         Async = ctx.Configuration.GetValue<bool?>("ASYNC").GetValueOrDefault() 
                     });

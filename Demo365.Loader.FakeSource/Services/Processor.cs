@@ -22,7 +22,7 @@ namespace Demo365.Loader.FakeSource.Services
             IParser parser, 
             IGamesSyncWriterClient gamesSyncWriterClient, 
             IGamesAsyncWriterClient gamesAsyncWriterClient,
-            ProcessorArgs args,
+            Config args,
             ILogger<Processor> logger)
         {
             _logger = logger;
@@ -38,9 +38,8 @@ namespace Demo365.Loader.FakeSource.Services
             var batch = 0;
             await foreach (var items in _parser.GetAsync()) 
             {
-                _logger.LogInformation($"Sending batch = {batch} ...");
                 await ProcessBatchAsync(items);
-                _logger.LogInformation($"Sent batch = {batch}, items = {items.Count()}");
+                _logger.LogInformation($"Sent batch #{batch}, items = {items.Count()}");
                 batch++;
             }
         }
@@ -66,8 +65,13 @@ namespace Demo365.Loader.FakeSource.Services
             {
                 _logger.LogDebug("Sending data (sync)...");
                 var addResult = await _gamesSyncWriterClient.WriteAsync(addRequest);
-                _logger.LogInformation($"Sent data (sync), added = {addResult.Added}");
+                _logger.LogInformation($"Sent data (sync), total/added = {items.Count()}/{addResult.Added}");
             }
+        }
+
+        public class Config
+        {
+            public bool Async { get; set; }
         }
     }
 }
