@@ -32,6 +32,7 @@ services:
       REPOSITORY_URL: 'http://internal-api-lb:5100'
       KAFKA_CONNECTION: 'kafka:9092'
       KAFKA_TOPIC: 'demo365_repository_insert'
+      ASYNC: 'false'
     depends_on:
       - repository-api
       - kafka
@@ -60,7 +61,7 @@ services:
     expose:
       - "80"
     #ports:
-    #  - "5100:80"
+    #  - "5101:80"
     depends_on:
       - repository-db
       - kafka
@@ -107,32 +108,9 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1      
-      KAFKA_CREATE_TOPICS: "demo365_repository_insert:1:3"      
+      KAFKA_CREATE_TOPICS: "demo365_repository_insert:1:1"      
     networks: 
       - backend
-      
-     
-  # elasticsearch:
-    # container_name: es-container
-    # image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-    # environment:
-      # - xpack.security.enabled=false
-      # - "discovery.type=single-node"
-    # networks:
-      # - backend
-    # ports:
-      # - 9200:9200
-  # kibana:
-    # container_name: kb-container
-    # image: docker.elastic.co/kibana/kibana:7.11.0
-    # environment:
-      # - ELASTICSEARCH_HOSTS=http://es-container:9200
-    # networks:
-      # - backend
-    # depends_on:
-      # - elasticsearch
-    # ports:
-      # - 5601:5601
       
 volumes:
   data: 

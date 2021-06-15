@@ -60,7 +60,7 @@ namespace Demo365.Api
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo365.Public API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo365.FrontEnd (Facade) API");
             });
         }
     }

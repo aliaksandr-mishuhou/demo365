@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Demo365.Api.Services;
 using Demo365.Contracts;
@@ -21,16 +22,56 @@ namespace Demo365.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost("search")]
+        [HttpGet("search/{sport}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<SearchResult>> Search(SearchRequest searchRequest)
+        public async Task<ActionResult<SearchResult>> SearchBySport(
+            [FromRoute]string sport, 
+            string competition, string team, DateTime? fromTime, DateTime?  toTime) 
         {
-            if (searchRequest == null || searchRequest.FromTime == null && searchRequest.ToTime == null)
+            // basic validation for required params
+            if (sport == null)
             {
                 return BadRequest();
             }
 
+            return await SearchAsync(new SearchRequest 
+            {
+                Sport = sport,
+                Competition = competition,
+                Team = team,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+        }
+
+        [HttpGet("search/{sport}/{competition}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<SearchResult>> SearchBySportAndCompetition(
+            [FromRoute] string sport,
+            [FromRoute] string competition, 
+            string team, DateTime? fromTime, DateTime? toTime)
+        {
+            // basic validation for required params
+            if (sport == null && competition == null)
+            {
+                return BadRequest();
+            }
+
+            return await SearchAsync(new SearchRequest
+            {
+                Sport = sport,
+                Competition = competition,
+                Team = team,
+                FromTime = fromTime,
+                ToTime = toTime
+            });
+        }
+
+
+        private async Task<ActionResult<SearchResult>> SearchAsync(SearchRequest searchRequest)
+        {
             _logger.LogDebug($"Searching for request = [{searchRequest}]");
 
             var result = await _searchService.SearchAsync(searchRequest);
