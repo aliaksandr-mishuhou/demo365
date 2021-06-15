@@ -6,6 +6,6 @@ namespace Demo365.Loader.FakeSource.Services
 {
     public interface IParser
     {
-        Task<IEnumerable<Game>> GetAsync();
+        IAsyncEnumerable<IEnumerable<Game>> GetAsync();
     }
 }

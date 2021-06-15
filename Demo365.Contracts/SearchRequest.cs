@@ -9,5 +9,8 @@ namespace Demo365.Contracts
         public string Sport { get; set; }
         public string Competition { get; set; }
         public string Team { get; set; }
+
+        public int Offset { get; set; }
+        public int PageSize { get; set; }
     }
 }
