@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Demo365.Repository
 {
@@ -26,11 +25,9 @@ namespace Demo365.Repository
             services.AddSwaggerGen();
 
             //services.AddSingleton<IGamesRepository, FileGamesRepository>();
-            services.AddSingleton<IGamesRepository, MysqlGamesRepository>(options => 
-                new MysqlGamesRepository(
-                    Configuration.GetValue<string>("DB_CONNECTION"), 
-                    options.GetService<ILogger<MysqlGamesRepository>>()
-                ));
+            services.AddSingleton<IDbRouter, SimpleDbRouter>(options => 
+                new SimpleDbRouter(Configuration.GetValue<string>("DB_CONNECTION")));
+            services.AddSingleton<IGamesRepository, MysqlGamesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

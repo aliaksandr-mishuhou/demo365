@@ -15,7 +15,9 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DB_CONNECTION": "Data Source=127.0.0.1;Database=demo365;User Id=demo365;Password=Demo365!;SSL Mode=None"
+        "DB_CONNECTION": "Data Source=127.0.0.1;Database=demo365;User Id=demo365;Password=Demo365!;SSL Mode=None",
+        "KAFKA_CONNECTION": "localhost:9092",
+        "KAFKA_TOPIC": "demo365_repository_insert",
       }
     },
     "Demo365.Repository": {

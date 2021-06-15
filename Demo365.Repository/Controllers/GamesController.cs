@@ -26,7 +26,7 @@ namespace Demo365.Repository.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<SearchResult>> Search(SearchRequest searchRequest)
         {
-            if (searchRequest == null || searchRequest.FromTime == null && searchRequest.ToTime == null)
+            if (searchRequest == null && searchRequest.Sport == null)
             {
                 return BadRequest();
             }

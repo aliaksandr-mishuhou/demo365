@@ -10,13 +10,20 @@ using System.Threading.Tasks;
 
 namespace Demo365.Repository.Services
 {
+    /// <summary>
+    /// simple MariaDB/MySQL repository
+    /// check DB Schema in setup.sql
+    /// 
+    /// TODO: use stored procedures
+    /// TODO: add paging
+    /// TODO: add retries
+    /// </summary>
     public class MysqlGamesRepository : IGamesRepository
     {
-        private readonly string _connectionString;
+        private readonly IDbRouter _router;
         private readonly ILogger<MysqlGamesRepository> _logger;
 
-        // private const int RetryCount = 1;
-
+        // TODO: better to replace with SP
         private const string CheckSql = @"
 SELECT COUNT(*) AS duplicates FROM games 
 WHERE sport = @Sport 
@@ -25,15 +32,18 @@ WHERE sport = @Sport
     AND time >= DATE_ADD(@Time, INTERVAL -5 MINUTE) AND time < DATE_ADD(@Time, INTERVAL 5 MINUTE)";
 
 
+        // TODO: better to replace with SP
         private const string InsertSql = @"
 INSERT INTO games(sport, competition, team1, team2, time)
 VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
 
-        private const string SearchSql = "SELECT * FROM games /**where**/";
+        // TODO: better to replace with SP
+        // TODO: add pagination, replace hardcoded limit = 100
+        private const string SearchSql = "SELECT * FROM games /**where**/ ORDER BY time LIMIT 0, 100";
 
-        public MysqlGamesRepository(string connectionString, ILogger<MysqlGamesRepository> logger)
+        public MysqlGamesRepository(IDbRouter router, ILogger<MysqlGamesRepository> logger)
         {
-            _connectionString = connectionString;
+            _router = router;
             _logger = logger;
         }
 
@@ -46,7 +56,17 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
             {
                 var gameIndexes = games.Select(g => ToDbEntity(g)).ToArray();
 
-                using (var conn = new MySqlConnection(_connectionString))
+                // NOTE: assume that we receive only batches with a single sport type
+                var sport = gameIndexes.FirstOrDefault()?.Sport;
+
+                if (sport == null) 
+                {
+                    return result;
+                }
+
+                // TODO: move check & insert operations to DB level (a single stored procedure)
+                var connectionString = _router.GetConnectionString(new DbRouterSettings { Sport = sport });
+                using (var conn = new MySqlConnection(connectionString))
                 {
                     await conn.OpenAsync();
 
@@ -57,7 +77,7 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
 
                         var check = await conn.QueryFirstOrDefaultAsync<Check>(CheckSql, gameIndex);
 
-                        if (check != null && check.Duplicates > 0) 
+                        if (check != null && check.Duplicates > 0)
                         {
 
                             _logger.LogDebug($"Ignoring duplicate [{gameIndex}]");
@@ -84,7 +104,8 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
         {
             try
             {
-                using (var conn = new MySqlConnection(_connectionString))
+                var connectionString = _router.GetConnectionString(new DbRouterSettings { Sport = search.Sport });
+                using (var conn = new MySqlConnection(connectionString))
                 {
                     await conn.OpenAsync();
 
@@ -113,6 +134,8 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
 
             var selector = builder.AddTemplate(SearchSql);
 
+            // basic filtering (full match)
+
             if (search.FromTime != null)
             {
                 builder.Where("time >= @FromTime", new { search.FromTime });
@@ -137,6 +160,8 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
             {
                 builder.Where("(team1 = @Team OR team2 = @Team)", new { search.Team });
             }
+
+            // TODO: paging support
 
             return selector;
         }
