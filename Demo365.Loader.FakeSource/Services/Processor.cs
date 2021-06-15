@@ -16,6 +16,8 @@ namespace Demo365.Loader.FakeSource.Services
         private readonly IGamesAsyncWriterClient _gamesAsyncWriterClient;
         private readonly bool _asyncMode;
 
+        private const string SourceId = "fake";
+
         public Processor(
             IParser parser, 
             IGamesSyncWriterClient gamesSyncWriterClient, 
@@ -45,7 +47,11 @@ namespace Demo365.Loader.FakeSource.Services
 
         private async Task ProcessBatchAsync(IEnumerable<Game> items) 
         {
-            var addRequest = new AddRequest { Items = items };
+            var addRequest = new AddRequest
+            {
+                Items = items,
+                Source = SourceId
+            };
 
             var addRequestJson = JsonConvert.SerializeObject(addRequest);
             _logger.LogDebug(addRequestJson);
@@ -62,7 +68,6 @@ namespace Demo365.Loader.FakeSource.Services
                 var addResult = await _gamesSyncWriterClient.WriteAsync(addRequest);
                 _logger.LogInformation($"Sent data (sync), added = {addResult.Added}");
             }
-
         }
     }
 }

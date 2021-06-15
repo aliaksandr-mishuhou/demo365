@@ -10,5 +10,5 @@ CREATE TABLE `games` (
   `team2` varchar(30) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_games_sport_competition_team1_team2_time` (`sport`,`competition`,`team1`,`team2`,`time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `idx_games_sport_competition_team1_team2_time` (`sport`,`competition`,`team1`,`team2`,`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -23,13 +23,15 @@ namespace Demo365.Repository.Services
         private readonly IDbRouter _router;
         private readonly ILogger<MysqlGamesRepository> _logger;
 
+        private const int UnqueIntervalMinutes = 120;
+
         // TODO: better to replace with SP
-        private const string CheckSql = @"
+        private const string CheckSqlTemplate = @"
 SELECT COUNT(*) AS duplicates FROM games 
 WHERE sport = @Sport 
     AND competition = @Competition 
     AND (team1 = @Team1 AND team2 = @Team2 OR team1 = @Team2 AND team2 = @Team1) 
-    AND time >= DATE_ADD(@Time, INTERVAL -5 MINUTE) AND time < DATE_ADD(@Time, INTERVAL 5 MINUTE)";
+    AND time >= DATE_ADD(@Time, INTERVAL -{0} MINUTE) AND time < DATE_ADD(@Time, INTERVAL {0} MINUTE)";
 
 
         // TODO: better to replace with SP
@@ -71,11 +73,13 @@ VALUES (@Sport, @Competition, @Team1, @Team2, @Time)";
                     await conn.OpenAsync();
 
                     // skip duplicates
+                    var halfInterval = Convert.ToInt32( UnqueIntervalMinutes * 1f / 2);
+                    var checkSql = string.Format(CheckSqlTemplate, halfInterval);
+
                     var filtered = new List<GameIndex>();
                     foreach (var gameIndex in gameIndexes)
                     {
-
-                        var check = await conn.QueryFirstOrDefaultAsync<Check>(CheckSql, gameIndex);
+                        var check = await conn.QueryFirstOrDefaultAsync<Check>(checkSql, gameIndex);
 
                         if (check != null && check.Duplicates > 0)
                         {

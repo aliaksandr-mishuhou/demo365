@@ -69,7 +69,7 @@ namespace Demo365.Loader.FakeSource.Services
                     Sport = sport,
                     Competition = competition,
                     Teams = new[] { gameTeam1, gameTeam2 },
-                    Time = DateTime.UtcNow
+                    Time = DateTime.UtcNow,
                 };
 
                 games.Add(game);
